@@ -1,0 +1,24 @@
+{
+  "name": "voltron",
+  "version": "1.0.0",
+  "description": "Assemble extensions from other extensions",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virtru/voltron.git"
+  },
+  "keywords": [
+    "browser",
+    "extensions",
+    "extensions"
+  ],
+  "author": "Gregory Waxman <akkuma+github@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/virtru/voltron/issues"
+  },
+  "homepage": "https://github.com/virtru/voltron"
+}
