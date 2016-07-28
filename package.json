@@ -1,0 +1,36 @@
+{
+  "name": "voltron",
+  "version": "1.0.0",
+  "description": "Assemble extensions from other extensions",
+  "main": "index.js",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virtru/voltron.git"
+  },
+  "keywords": [
+    "browser extension",
+    "browser-extension",
+    "extensions"
+  ],
+  "author": "Gregory Waxman <akkuma+github@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/virtru/voltron/issues"
+  },
+  "homepage": "https://github.com/virtru/voltron",
+  "dependencies": {
+    "co": "^4.6.0",
+    "creed": "^1.0.2",
+    "glob": "^7.0.5",
+    "npminstall": "^2.1.0"
+  },
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "globby": "^6.0.0",
+    "webpack": "^1.13.1"
+  }
+}
