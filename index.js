@@ -15,23 +15,34 @@ function getExtensions() {
   return findPackageJson('').dependencies.filter(dep => dep.indexOf('voltron-') >= 0);
 }
 
+function getExtensionConfig(path) {
+  try {
+    return require(path + 'package.json').voltron;
+  }
+  catch (e) {
+    return require(path + 'voltron.js');
+  }
+}
+
 let voltronOpts;
-function getVoltronOpts() {
+function getVoltronConfigs() {
   if (voltronOpts) return voltronOpts;
+
   voltronOpts = getExtensions().map(function(name) {
     let extensionPath = './node_modules/' + name + '/';
-    let package = require(extensionPath + 'package.json');
+    let config = getExtensionConfig(extensionPath);
 
-    package.voltron.build = require(path.resolve(extensionPath, package.voltron.build));
-    package.voltron.manifest = require(path.resolve(extensionPath, package.voltron.manifest));
-    return package.voltron;
+    return {
+      build: require(path.resolve(extensionPath, config.build)),
+      manifest: require(path.resolve(extensionPath, config.manifest))
+    };
   });
 
   return voltronOpts;
 }
 
 function updateManifest(baseManifest) {
-  return getVoltronOpts().reduce(function(opts) {
+  return getVoltronConfigs().reduce(function(baseManifest, opts) {
     for (let key in opts.manifest) {
       let manifestVal = opts.manifest[key];
       let baseManifestVal = baseManifest[key];
@@ -49,7 +60,7 @@ function updateManifest(baseManifest) {
 }
 
 function buildVoltronExtensions() {
-  return getVoltronOpts().reduce(function(acc, opts) {
+  return getVoltronConfigs().reduce(function(acc, opts) {
     acc.push(opts.build());
     return acc;
   }, []);
