@@ -37,7 +37,7 @@ function updateManifest(baseManifest) {
       let baseManifestVal = baseManifest[key];
 
       if (Array.isArray(baseManifestVal)) {
-        baseManifestVal.push(manifestVal);
+        baseManifestVal.push.apply(baseManifestVal, manifestVal);
       }
       else {
         console.warn('Adding non-Arrays is not currently supported');
