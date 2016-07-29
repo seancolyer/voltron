@@ -4,15 +4,15 @@
   "description": "Assemble extensions from other extensions",
   "main": "index.js",
   "scripts": {
-    "test": "nyc ava"
+    "test": "ava"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/virtru/voltron.git"
   },
   "keywords": [
-    "browser",
-    "extensions",
+    "browser extension",
+    "browser-extension",
     "extensions"
   ],
   "author": "Gregory Waxman <akkuma+github@gmail.com>",
@@ -20,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/virtru/voltron/issues"
   },
-  "homepage": "https://github.com/virtru/voltron"
+  "homepage": "https://github.com/virtru/voltron",
+  "dependencies": {
+    "creed": "^1.0.2"
+  },
+  "devDependencies": {
+    "ava": "^0.15.2"
+  }
 }
