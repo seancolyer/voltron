@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Assemble extensions from other extensions",
   "main": "index.js",
+  "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "test": "ava"
   },
