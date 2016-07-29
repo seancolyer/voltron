@@ -56,6 +56,7 @@ function buildVoltronExtensions() {
 }
 
 module.exports = function(manifest) {
+  let manifestCopy = JSON.parse(JSON.stringify(manifest));
   return Promise.all(buildVoltronExtensions())
-    .then(() => updateManifest(manifest));
+    .then(() => updateManifest(manifestCopy));
 };
