@@ -8,38 +8,26 @@ If you have an extension that runs on its own, but is deployed together with oth
 
 ##How?
 ###Configuration
-There are two choices on how to configure Voltron.
+Voltron uses mostly convention over configuration. The only configuration is getting things running.
 
-1. Place your config within your extension's `package.json`
-2. Create a `voltron.js` file in the root of your project
+Voltron supports the following build configurations:
+* A `**/voltron.js` file placed anywhere that tells Voltron how to build your extension
+* A `**/voltron/` folder placed anywhere within the project with either an `index.js` or `build.js`
 
-Options 1 looks like this:
-```json
-{
-    "name": "independent-extension",
-    "voltron": {
-        "build": "./relative/path/to/build/file.js",
-        "manifest": "./relative/path/to/manifest/file.js"
-    }
-}
-```
-
-Option 2 looks like:
-```js
-module.exports = {
-    build: './relative/path/to/build/file.js',
-    manifest: './relative/path/to/manifest/file.js'
-}
-```
+Voltron supports the following manifest configurations:
+* A `**/manifest.js` file placed anywhere that Voltron will merge into the parent extension
+* A `**/manifest.json` file placed anywhere that Voltron will merge into the parent extension
 
 ###Build File
-Your build file is a module that exports a `function` that returns a `Promise`. The `Promise` is for coordinating other build steps that may need to wait on the child extension's build.
+Your build file is a module that exports a `function` that will receive the output directory for where it should build and returns a `Promise`. The `Promise` is for coordinating other build steps that may need to wait on the child extension's build to complete.
 
 ```js
-module.exports = function() {
+module.exports = function(outputDirectory) {
     return new Promise((resolve, reject) => {
         // do build stuff
-        resolve(true);
+        
+        // build is now complete
+        resolve(/*whatever*/);
     });
 }
 ```
@@ -52,7 +40,8 @@ Use Voltron during your build process to combine all extensions into one extensi
 
 ```js
 let voltron = require('voltron');
-let voltronPromise = voltron(baseManifest);
+let voltronPromise = voltron(baseManifest, outputDirectory);
 ```
 
-Then depending on your build tool of choice, wait for the promise to resolve and you'll be returned a new manifest with all your extensions rolled up into one
+Your `baseManifest` will be your parent extension's manifest and the `outputDirectory` will be where you're building your extension to.
+Then depending on your build tool of choice, wait for the promise to resolve and you'll be returned a new manifest with all your extensions rolled up into one.
