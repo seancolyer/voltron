@@ -18,7 +18,6 @@
     "extensions"
   ],
   "author": "Gregory Waxman <akkuma+github@gmail.com>",
-  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/virtru/voltron/issues"
   },
