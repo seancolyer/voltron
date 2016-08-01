@@ -24,9 +24,11 @@
   },
   "homepage": "https://github.com/virtru/voltron",
   "dependencies": {
-    "creed": "^1.0.2"
+    "creed": "^1.0.2",
+    "globby": "^6.0.0"
   },
   "devDependencies": {
-    "ava": "^0.15.2"
+    "ava": "^0.15.2",
+    "webpack": "^1.13.1"
   }
 }

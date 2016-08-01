@@ -1,7 +1,6 @@
-module.exports = {
+{
   "manifest_version": 2,
-
-  "name": "DriveExtension Test",
+  "name": "BaseExtension Test",
   "description": "Drive Extension Test",
   "version": "1.0",
   "homepage_url": "https://www.virtru.com",
@@ -19,7 +18,6 @@ module.exports = {
     "default_title": "Virtru"
   },
   "permissions": [
-    "something",
     "tabs",
     "storage",
     "https://*/",
@@ -28,10 +26,10 @@ module.exports = {
   "content_scripts": [
     {
       "css": [
-        "css/virtru-child-extension.css"
+        "css/virtru-drive-extension.css"
       ],
       "js": [
-        "js/virtru-child-content.js"
+        "js/virtru-drive-content.js"
       ],
       "matches": [
         "http://drive.google.com/*",
@@ -41,7 +39,6 @@ module.exports = {
   ],
   "web_accessible_resources": [
     "js/*",
-    "css/*",
-    "img/*"
+    "css/*"
   ]
-};
+}

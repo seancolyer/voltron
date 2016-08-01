@@ -1,4 +1,4 @@
 module.exports = {
-  build: '../build',
-  manifest: '../manifest'
+  build: require('../build'),
+  manifest: require('../manifest')
 };
