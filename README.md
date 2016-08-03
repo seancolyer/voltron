@@ -7,16 +7,28 @@ Voltron is a library for use while building a browser extension to allow for mak
 If you have an extension that runs on its own, but is deployed together with other extensions, you'll want a way to combine them all with the minimal amount of configuration
 
 ##How?
-###Configuration
-Voltron uses mostly convention over configuration. The only configuration is getting things running.
+###Conventions
+Voltron uses mostly convention over configuration. The only configuration is related to the same things you'd need to get the individual child extensionrunning.
 
-Voltron supports the following build configurations:
+Voltron discovers your child extensions through the convention of looking through your dependencies for anything that matches `voltron-`.
+
+Voltron supports the following build conventions:
 * A `**/voltron.js` file placed anywhere that tells Voltron how to build your extension
 * A `**/voltron/` folder placed anywhere within the project with either an `index.js` or `build.js`
 
-Voltron supports the following manifest configurations:
+Voltron supports the following manifest conventions:
 * A `**/manifest.js` file placed anywhere that Voltron will merge into the parent extension
 * A `**/manifest.json` file placed anywhere that Voltron will merge into the parent extension
+
+###Package.json
+Declare your child extensions as dependencies to your parent/host extension and Voltron will discover it.
+```json
+{
+    "dependencies": {
+        "voltron-child-extension": "^1.0.0",
+    }
+}
+```
 
 ###Build File
 Your build file is a module that exports a `function` that will receive the output directory for where it should build and returns a `Promise`. The `Promise` is for coordinating other build steps that may need to wait on the child extension's build to complete.
