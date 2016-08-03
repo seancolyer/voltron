@@ -3,10 +3,19 @@
 let voltron = require('./lib/voltron');
 let Promise = require('creed');
 
+function pipe(fns, val) {
+  return fns.reduce((curVal, fn) => fn(curVal), val);
+}
+
 module.exports = function(opts) {
-  let configsProm = voltron.getConfigs(voltron.getExtensionNames(opts.root), opts.root);
+  let configsProm = pipe([
+    voltron.findPackageJson,
+    voltron.getExtensionNames,
+    (extensionNames) => voltron.getConfigs(extensionNames, opts.cwd)
+  ], opts.cwd);
+
   return configsProm.then(configs => {
-    return Promise.all(voltron.buildExtensions(configs, opts.outputDir))
+    return voltron.buildExtensions(configs, opts.outputDir)
       .then(() => voltron.updateManifest(configs, opts.manifest));
   });
 };

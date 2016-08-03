@@ -6,7 +6,7 @@ import fixture from '../fixtures';
 const buildDir = fixture.extOneDir + '/build/';
 test('voltron full run', async t => {
   let manifest = await voltron({
-    root: fixture.dir,
+    cwd: fixture.dir,
     outputDir: buildDir,
     manifest: fixture.manifestJson
   });

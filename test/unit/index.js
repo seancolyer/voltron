@@ -14,7 +14,7 @@ test('findPackageJson prefix works', findPackage, fixture.dir, fixture.packageJs
 test('findPackageJson traverses up', findPackage, fixture.dir + '/fake/deep/path', fixture.packageJson);
 
 test('getExtensionNames finds only voltron extensions', t => {
-  const extensions = voltron.getExtensionNames(fixture.dir);
+  const extensions = voltron.getExtensionNames(fixture.packageJson);
   t.is(extensions.length, 2);
   t.deepEqual(extensions, ['voltron-test', 'voltron-test2']);
 });
@@ -54,7 +54,7 @@ test('updateManifest ', t => {
 
 test('buildExtensions', async t => {
   const configs = await voltron.getConfigs(['voltron-test'], fixture.dir + '/');
-  const stats = await Promise.all(voltron.buildExtensions(configs, voltronTestDir + '/build'));
+  const stats = await voltron.buildExtensions(configs, voltronTestDir + '/build');
 
   const matches = await globby(['**/build/voltron-*.js'], { cwd: voltronTestDir });
   t.is(matches.length, 1);
