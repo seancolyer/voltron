@@ -134,7 +134,7 @@ Part of our grunt tasks might look like this. Keep in mind that this is a simpli
 let voltron = require('voltron');
 
 grunt.registerTask('chrome', 'Chrome extension in release mode.', function() {
-    grunt.task.run(['voltron, 'chrome-manifest']);
+    grunt.task.run(['voltron', 'chrome-manifest']);
 });
 
 let voltronManifest;
