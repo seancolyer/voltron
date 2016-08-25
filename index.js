@@ -8,14 +8,15 @@ function pipe(fns, val) {
 }
 
 module.exports = function(opts) {
-  let configsProm = pipe([
+  let extNames = pipe([
     voltron.findPackageJson,
-    voltron.getExtensionNames,
-    (extensionNames) => voltron.getConfigs(extensionNames, opts.cwd)
+    voltron.getExtensionNames
   ], opts.cwd);
 
-  return configsProm.then(configs => {
-    return voltron.buildExtensions(configs, opts.outputDir)
-      .then(() => voltron.updateManifest(configs, opts.manifest));
-  });
+  return voltron.installDevDeps(extNames, opts.cwd)
+    .then(_ => voltron.getConfigs(extNames, opts.cwd))
+    .then(configs => {
+      return voltron.buildExtensions(configs, opts.outputDir)
+        .then(() => voltron.updateManifest(configs, opts.manifest));
+    });
 };
