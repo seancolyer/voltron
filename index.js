@@ -1,7 +1,6 @@
 'use strict';
 
 let voltron = require('./lib/voltron');
-let Promise = require('creed');
 
 function pipe(fns, val) {
   return fns.reduce((curVal, fn) => fn(curVal), val);
