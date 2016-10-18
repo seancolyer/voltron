@@ -54,7 +54,7 @@ test('updateManifest ', t => {
 
 test('buildExtensions', async t => {
   const configs = await voltron.getConfigs(['voltron-test'], fixture.dir + '/');
-  const stats = await voltron.buildExtensions(configs, voltronTestDir + '/build');
+  const stats = await voltron.buildExtensions(configs, { outputDir: voltronTestDir + '/build' });
 
   const matches = await globby(['**/build/voltron-*.js'], { cwd: voltronTestDir });
   t.is(matches.length, 1);

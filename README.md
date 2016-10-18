@@ -10,7 +10,7 @@ If you have an extension that runs on its own, but is deployed together with oth
 ###Conventions
 Voltron uses mostly convention over configuration. The only configuration is related to the same things you'd need to get the individual child extensionrunning.
 
-Voltron discovers your child extensions through the convention of looking through your dependencies for anything that matches `voltron-`.
+Voltron discovers your child extensions, which we'll call voltron extensions, through the convention of looking through your dependencies for anything that matches `voltron-`.
 
 Voltron supports the following build conventions:
 * A `**/voltron.js` file placed anywhere that tells Voltron how to build your extension
@@ -31,10 +31,10 @@ Declare your child extensions as dependencies to your parent/host extension and 
 ```
 
 ###Build File
-Your build file is a module that exports a `function` that will receive the output directory for where it should build and returns a `Promise`. The `Promise` is for coordinating other build steps that may need to wait on the child extension's build to complete. If you don't leverage the output directory Voltron won't provide you with as much value as you'll need to manually copy/move the output of a child extension. In the future, we could add in another convention to automate this process as well.
+Your build file is a module that exports a `function` that will receive the build options, which should always include an output directory for where it should build, and returns a `Promise`. The `Promise` is for coordinating other build steps that may need to wait on the child extension's build to complete. If you don't leverage the output directory Voltron won't provide you with as much value as you'll need to manually copy/move the output of a child extension. In the future, we could add in another convention to automate this process as well.
 
 ```js
-module.exports = function(outputDirectory) {
+module.exports = function(buildOptions) {
     return new Promise((resolve, reject) => {
         // do build stuff
         
@@ -48,15 +48,27 @@ module.exports = function(outputDirectory) {
 Your manifest file can either be a JSON file or a js file that exports an object that has all the fields you want to merge into the parent manifest. Voltron will intelligently avoid certain keys that should not be merged and will add those that should be.
 
 ###Main Extension
-Use Voltron during your build process to combine all extensions into one extension
+Use Voltron during your build process to combine all extensions into one extension. There is only a single function directly exposed and should handle everything you need.
 
 ```js
-let voltron = require('voltron');
-let voltronPromise = voltron(baseManifest, outputDirectory);
+const voltron = require('voltron');
+const voltronPromise = voltron({
+  cwd: 'path', // Optional, defaults to process.cwd()
+  manifest: 'path to manifest.json', // Required
+  buildOpts: { // This is your own convention object to use how you see fit 
+    outputDir: path.resolve(__dirname, '../../../build/chrome/'), // Required
+    env: 'some env' // Recommended
+  }
+});
 ```
 
-Your `baseManifest` will be your parent extension's manifest and the `outputDirectory` will be where you're building your extension to.
-Then depending on your build tool of choice, wait for the promise to resolve and you'll be returned a new manifest with all your extensions rolled up into one.
+| Property | Description |
+| ------ | -------  |
+| manifest | The manifest to use as the base object to merge voltron extension manifests into. Think of it as Object.assign({}, manifest, voltronExtension1, voltronExtension2) |
+| cwd | Volron will default to start searching for voltron extensions in the `process.cwd` using a glob implementation. You can optimize this by passing it the `node_modules` to start searching from, which will speed up Voltron for a large codebase |
+| buildOpts | Your own free to use object that'll be passed into all voltron extensions build functions |
+
+`buildOpts` will be passed to your build script. An `outputDir` is required otherwise voltron loses value without your build supporting a dynamic output path. The function returns a promise that eventually resolves with the combined manifest to use with the rest of your build process.
 
 ##Putting it all together
 We'll be modifying a fake extension called VapeNation to support Voltron. In VapeNation we have a directory structure that looks like this
@@ -96,13 +108,13 @@ var spawn = require('fly/lib/cli/spawn');
 var creed = require('creed');
 var path = require('path');
 
-module.exports = function(outputDir) {
+module.exports = function(buildOpts) {
   var originalCwd = process.cwd();
   return creed.coroutine(spawn)(path.resolve(__dirname, '../../'))
     .then(function onSpawn(fly) {
       return reporter.call(fly)
-        .emit('fly_run', { path: fly.file })
-        .start(['build'], { value: outputDir });
+``        .emit('fly_run', { path: fly.file })
+        .start(['build:' + buildOpts.env], { value: buildOpts.outputDir });
     })
     .then(function onComplete(res) {
       //@NOTE: Fly currently hijacks the chdir, which messes up other code relying on process.cwd()
@@ -111,7 +123,7 @@ module.exports = function(outputDir) {
     });
 };
 ```
-What is happening here is that we create a function that will accept an output directory that can and should be passed into your build system/tools. You should make your build process able to handle a dynamic output directory otherwise Voltron won't provide any value. The function should start up your build process and doesn't actually need to return anything meaningful at this point in time. The result of this function should be a `Promise`, which allows Voltron to know when your build actually completes.
+What is happening here is that we create a function that will accept the build options that can and should be passed into your build system/tools. You should make your build process able to handle a dynamic output directory otherwise Voltron won't provide any value. The function should start up your build process and doesn't actually need to return anything meaningful at this point in time. The result of this function should be a `Promise`, which allows Voltron to know when your build actually completes.
 
 ###Create a manifest
 Your manifest was already needed to create a web extension, so if it follows the conventions listed earlier about naming you should not need to do anything else as Voltron knows what pieces of a manifest make sense to merge into another manifest.
@@ -143,7 +155,10 @@ grunt.registerTask('voltron', function() {
     const voltronProm = voltron({
         cwd: path.resolve(__dirname, '../../../node_modules'),
         manifest: require('../../../browsers/chrome/manifest.json'),
-        outputDir: path.resolve(__dirname, '../../../build/chrome/')
+        buildOpts: {
+          outputDir: path.resolve(__dirname, '../../../build/chrome/'),
+          env: dynamicEnvironment
+        }
     });
     voltronProm.then((manifest) => {
         voltronManifest = manifest;
@@ -171,6 +186,6 @@ function chromeManifest(grunt) {
 ```
 The important part to this example is the voltron task. Remember, Voltron is built to handle the possibility of an asynchronous build in a child extension, in this case VapeNation. This means you must handle awaiting the result of the promise in your build system.
 
-Voltron uses the `cwd` to know where to search through, so by limiting it to the host extensions's `node_modules` we can speed up the search. Next we have `manifest`, which is your JSON or POJO that contains your host/parent, H3H3's, manifest. We need this manifest to merge VapeNation's manifest into it to create a new manifest that will allow both extensions to run. Finally, we have `outputDir`, which will tell VapeNation where it's build process should output/copy files.
+Voltron uses the `cwd` to know where to search through, so by limiting it to the host extensions's `node_modules` we can speed up the search. Next we have `manifest`, which is your JSON or POJO that contains your host/parent, H3H3's, manifest. We need this manifest to merge VapeNation's manifest into it to create a new manifest that will allow both extensions to run. Finally, we have `buildOpts` containing both an `outputDir` and an `environment`, which will tell VapeNation where it's build process should output/copy files.
 
 The result of running Voltron will be a new manifest, as the results of the build process itself, ran from VapeNation's build file, will not produce anything directly of value for H3H3. After the Promise completes you'll receive the newly merged manifest, which you can use in a way that fits your build system best.

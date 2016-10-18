@@ -1,6 +1,6 @@
 {
   "name": "voltron",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Assemble extensions from other extensions",
   "main": "index.js",
   "private": true,
@@ -29,7 +29,7 @@
     "npminstall": "^2.1.0"
   },
   "devDependencies": {
-    "ava": "^0.15.2",
+    "ava": "^0.16.0",
     "globby": "^6.0.0",
     "webpack": "^1.13.1"
   }

@@ -19,11 +19,11 @@ const config = {
 };
 
 module.exports = function(dirname) {
-  return function(outputDir) {
+  return function(opts) {
     const configCopy = Object.assign({}, config);
 
     configCopy.context = dirname;
-    configCopy.output.path = outputDir;
+    configCopy.output.path = opts.outputDir;
 
     const deferred = creed.future();
     // run webpack

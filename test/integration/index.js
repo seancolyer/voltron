@@ -7,8 +7,10 @@ const buildDir = fixture.extOneDir + '/build/';
 test('voltron full run', async t => {
   let manifest = await voltron({
     cwd: fixture.dir,
-    outputDir: buildDir,
-    manifest: fixture.manifestJson
+    manifest: fixture.manifestJson,
+    buildOpts: {
+      outputDir: buildDir
+    }
   });
 
   t.true(typeof manifest == 'object');
