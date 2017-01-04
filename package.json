@@ -26,7 +26,6 @@
     "co": "^4.6.0",
     "creed": "1.0.4",
     "glob": "^7.0.5",
-    "npminstall": "^2.1.0",
     "pnpm": "^0.45.1"
   },
   "devDependencies": {
