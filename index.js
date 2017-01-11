@@ -2,15 +2,9 @@
 
 const voltron = require('./lib/voltron');
 
-function pipe(fns, val) {
-  return fns.reduce((curVal, fn) => fn(curVal), val);
-}
-
 module.exports = function(opts) {
-  let extNames = pipe([
-    voltron.findPackageJson,
-    voltron.getExtensionNames
-  ], opts.cwd);
+  const packageJson = voltron.findPackageJson(opts.cwd);
+  const extNames = voltron.getExtensionNames(packageJson, opts);
 
   return voltron.installDevDeps(extNames, opts.cwd)
     .then(_ => voltron.getConfigs(extNames, opts.cwd))

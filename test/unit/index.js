@@ -19,6 +19,18 @@ test('getExtensionNames finds only voltron extensions', t => {
   t.deepEqual(extensions, ['voltron-test', 'voltron-test2']);
 });
 
+test('getExtensionNames finds only voltron extensions explicity included', t => {
+  const extensions = voltron.getExtensionNames(fixture.packageJson, { include: ['test2'] });
+  t.is(extensions.length, 1);
+  t.deepEqual(extensions, ['voltron-test2']);
+});
+
+test('getExtensionNames finds only voltron extensions not excluded ', t => {
+  const extensions = voltron.getExtensionNames(fixture.packageJson, { exclude: ['test2'] });
+  t.is(extensions.length, 1);
+  t.deepEqual(extensions, ['voltron-test']);
+});
+
 const config = {
   build: fixture.build,
   manifest: fixture.manifest

@@ -4,6 +4,7 @@ Changelog
   * Added blacklist to reduce dev deps installed
   * Changed extensions to build sequentially to prevent conflicts
   * Updated creed to use a specific version due to v1.1.0 bugs
+  * Added ability to include/exclude specific extensions
 
 * 2.0.0
   * Changed `outputDir` to be a generic build options object to support anything
