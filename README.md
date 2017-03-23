@@ -55,6 +55,8 @@ const voltron = require('voltron');
 const voltronPromise = voltron({
   cwd: 'path', // Optional, defaults to process.cwd()
   manifest: 'path to manifest.json', // Required
+  include: [], // Optional
+  exclude: [], // Optional
   buildOpts: { // This is your own convention object to use how you see fit 
     outputDir: path.resolve(__dirname, '../../../build/chrome/'), // Required
     env: 'some env' // Recommended
@@ -62,10 +64,12 @@ const voltronPromise = voltron({
 });
 ```
 
-| Property | Description |
-| ------ | -------  |
-| manifest | The manifest to use as the base object to merge voltron extension manifests into. Think of it as Object.assign({}, manifest, voltronExtension1, voltronExtension2) |
-| cwd | Volron will default to start searching for voltron extensions in the `process.cwd` using a glob implementation. You can optimize this by passing it the `node_modules` to start searching from, which will speed up Voltron for a large codebase |
+| Property  | Description                                                                                                                                                                                                                                      |
+| ------    | -------                                                                                                                                                                                                                                          |
+| manifest  | The manifest to use as the base object to merge voltron extension manifests into. Think of it as Object.assign({}, manifest, voltronExtension1, voltronExtension2)                                                                               |
+| cwd       | Volron will default to start searching for voltron extensions in the `process.cwd` using a glob implementation. You can optimize this by passing it the `node_modules` to start searching from, which will speed up Voltron for a large codebase |
+| include   | Voltron extensions that you specifically want to include, which acts as a whitelist (independent of exclude), only need partial name ie test for voltron-test |
+| exclude | Voltron extensions that you specifically want to exclude, which acts as a blacklist (independent of include, but wins if an extension exists in both)   |
 | buildOpts | Your own free to use object that'll be passed into all voltron extensions build functions |
 
 `buildOpts` will be passed to your build script. An `outputDir` is required otherwise voltron loses value without your build supporting a dynamic output path. The function returns a promise that eventually resolves with the combined manifest to use with the rest of your build process.
