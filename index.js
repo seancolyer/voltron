@@ -5,6 +5,7 @@ const voltron = require('./lib/voltron');
 module.exports = function(opts) {
   const packageJson = voltron.findPackageJson(opts.cwd);
   const extNames = voltron.getExtensionNames(packageJson, opts);
+  console.log('EXTENSIONS' + extNames);
 
   return voltron.installDevDeps(extNames, opts.cwd)
     .then(_ => voltron.getConfigs(extNames, opts.cwd))
