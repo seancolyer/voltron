@@ -10,5 +10,7 @@ module.exports = async function(opts) {
   await voltron.installDevDeps(extNames, opts.cwd);
   const configs = voltron.getConfigs(extNames, opts.cwd);
   await voltron.buildExtensions(configs, opts.buildOpts);
-  await voltron.updateManifest(configs, opts.manifest);
+  const manifest = await voltron.updateManifest(configs, opts.manifest);
+  console.log('complete');
+  return manifest;
 };
