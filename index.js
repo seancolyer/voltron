@@ -2,15 +2,13 @@
 
 const voltron = require('./lib/voltron');
 
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const packageJson = voltron.findPackageJson(opts.cwd);
   const extNames = voltron.getExtensionNames(packageJson, opts);
   console.log('EXTENSIONS' + extNames);
 
-  return voltron.installDevDeps(extNames, opts.cwd)
-    .then(_ => voltron.getConfigs(extNames, opts.cwd))
-    .then(configs => {
-      return voltron.buildExtensions(configs, opts.buildOpts)
-        .then(() => voltron.updateManifest(configs, opts.manifest));
-    });
+  await voltron.installDevDeps(extNames, opts.cwd);
+  const configs = voltron.getConfigs(extNames, opts.cwd);
+  await voltron.buildExtensions(configs, opts.buildOpts);
+  await voltron.updateManifest(configs, opts.manifest);
 };
