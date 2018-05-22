@@ -25,7 +25,6 @@
   "dependencies": {
     "creed": "1.0.4",
     "glob": "^7.0.5",
-    "pnpm": "^0.48.0",
     "taskr": "^1.1.0"
   },
   "devDependencies": {
